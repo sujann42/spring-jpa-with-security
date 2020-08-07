@@ -11,3 +11,14 @@ User -> Posts  [1 to many]
 - Retrieve all posts for a User:   - GET   /users{1}/posts
 - Create a post for a user:        - POST  /users/{id}/posts
 - Retrieve details of a post:      - GET   /users/{id}/posts/{posts_id}
+
+
+-HATEOAS (HyperMedia as the Engine of Application State )
+-> Providing a link to the user we get using the @GetMapping
+-On pom.xml add a dependency
+
+<!--This is for HATEOAS-->
+    <dependency>
+    			<groupId>org.springframework.boot</groupId>
+    			<artifactId>spring-boot-starter-hateoas</artifactId>
+    		</dependency>

@@ -4,16 +4,19 @@ import com.rest.exception.UserNotFoundException;
 import com.rest.model.User;
 import com.rest.service.UserDAOService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.hateoas.EntityModel;
 
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class UserController {
@@ -29,12 +32,20 @@ public class UserController {
 
     //Get one user
     @GetMapping("/users/{id}")
-    public User getOneUser(@PathVariable int id) {
+    public EntityModel<User> retrieveUser(@PathVariable int id) {
         User user = daoService.findOne(id);
         if (user == null) {
             throw new UserNotFoundException("ID- " + id);
         }
-        return user;
+
+        //"all-users", SERVER_PATH + "/users"
+        //retrieve all Users
+        //HATEOAS
+        EntityModel<User> resource = EntityModel.of(user);
+        WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllUsers());
+        resource.add(linkTo.withRel("All Users"));
+
+        return resource;
     }
 
     //@RequestBody maps the detail to the variables on the model class [User]
