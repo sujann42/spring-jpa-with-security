@@ -19,6 +19,18 @@ User -> Posts  [1 to many]
 
 <!--This is for HATEOAS-->
     <dependency>
-    			<groupId>org.springframework.boot</groupId>
-    			<artifactId>spring-boot-starter-hateoas</artifactId>
-    		</dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-hateoas</artifactId>
+    </dependency>
+
+    ++++++++++++++
+ #INTERNATIONALIZATION => I18N CUSTOMIZING UI SERVICES TO PEOPLE ALL OVER THE WORLD.
+ #CONGIGURE:
+ 1) LocaleResolver
+ 2) Default Locale - Locale.US
+ 3) ResourceBundleMessageSource
+
+ #USAGE:
+ 1) Autowire MessageSource
+ 2) @RequestHeader(value = "Accept-Language", required = false) Locale locale
+ 3) messageSource.getMessage("hello.message", null, locale)
