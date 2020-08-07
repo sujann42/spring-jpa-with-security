@@ -23,6 +23,8 @@ public class TestController {
 
     //This method displays messages in different languages as mentioned.
     //On postman if the Accept-Language is default- its english, dn = denmark and fr = french
+    //messages_fr.properties, messages_dn.properties & messages.properties files with messages are created under resources from which messages arec picked up
+    //as mentioned by the user. We can test it through postman
     @GetMapping("/internationalization")
     public String helloInternationlization(@RequestHeader(name = "Accept-Language", required = false) Locale locale) {
         return messageSource.getMessage("good.morning.message", null, locale);
