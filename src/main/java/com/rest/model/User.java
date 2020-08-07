@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 
@@ -12,8 +14,11 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 public class User {
+
     private Integer id;
+    @Size(min=2, max = 23, message = "Name should have at least 2 characters.")
     private String name;
+    @Past
     private Date birthDate;
 
     public User(Integer id, String name, Date birthDate) {

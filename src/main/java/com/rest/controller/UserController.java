@@ -7,8 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.web.util.UriBuilder;
 
+
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.Date;
 import java.util.Iterator;
@@ -39,7 +40,7 @@ public class UserController {
     //@RequestBody maps the detail to the variables on the model class [User]
     //Save one user
     @PostMapping("/users")
-    public ResponseEntity saveUser(@RequestBody User user) {
+    public ResponseEntity createUser(@Valid @RequestBody User user) {
         User savedUser = daoService.save(user);
         //Status of Created User
         //Get the uri of the current user
