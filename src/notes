@@ -1,5 +1,6 @@
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #Restful Web Services
-
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Social Media Application
 User -> Posts  [1 to many]
 
@@ -12,8 +13,9 @@ User -> Posts  [1 to many]
 - Create a post for a user:        - POST  /users/{id}/posts
 - Retrieve details of a post:      - GET   /users/{id}/posts/{posts_id}
 
-
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -HATEOAS (HyperMedia as the Engine of Application State )
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -> Providing a link to the user we get using the @GetMapping
 -On pom.xml add a dependency
 
@@ -23,8 +25,9 @@ User -> Posts  [1 to many]
         <artifactId>spring-boot-starter-hateoas</artifactId>
     </dependency>
 
-    ++++++++++++++
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  #INTERNATIONALIZATION => I18N CUSTOMIZING UI SERVICES TO PEOPLE ALL OVER THE WORLD.
+ ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  #CONGIGURE:
  1) LocaleResolver
  2) Default Locale - Locale.US
@@ -34,3 +37,68 @@ User -> Posts  [1 to many]
  1) Autowire MessageSource
  2) @RequestHeader(value = "Accept-Language", required = false) Locale locale
  3) messageSource.getMessage("hello.message", null, locale)
+
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ CONTENT NEGOTIATION: Getting data in XML format
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ - To get data on XML -> include jar for XML
+ <dependency>
+    <groupId>com.fasterxml.jackson.dataformat</groupId>
+    <artifactId>jackson-dataformat-xml</artifactId>
+ </dependency>
+ - On Header of Postman, set Key (Accept) to Value (application/xml) and include the following jar on pom.xml
+ - XML always get preference over JSON, so its a good idea to comment on jars on pom.xml
+
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ SWAGGER:
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ -Add following 2 dependencies
+<!--Swagger Dependencies-->
+<!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger2 -->
+    <dependency>
+        <groupId>io.springfox</groupId>
+        <artifactId>springfox-swagger2</artifactId>
+        <version>2.10.5</version>
+    </dependency>
+<!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui -->
+    <dependency>
+        <groupId>io.springfox</groupId>
+        <artifactId>springfox-swagger-ui</artifactId>
+        <version>2.10.5</version>
+    </dependency>
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

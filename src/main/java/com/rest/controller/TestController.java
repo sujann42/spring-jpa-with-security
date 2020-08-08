@@ -4,12 +4,14 @@ import com.rest.model.MyBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import java.util.Locale;
@@ -20,15 +22,6 @@ public class TestController {
 
     @Autowired
     private MessageSource messageSource;
-
-    //This method displays messages in different languages as mentioned.
-    //On postman if the Accept-Language is default- its english, dn = denmark and fr = french
-    //messages_fr.properties, messages_dn.properties & messages.properties files with messages are created under resources from which messages arec picked up
-    //as mentioned by the user. We can test it through postman
-    @GetMapping("/internationalization")
-    public String helloInternationlization(@RequestHeader(name = "Accept-Language", required = false) Locale locale) {
-        return messageSource.getMessage("good.morning.message", null, locale);
-    }
 
     @GetMapping("/test")
     public String test() {
@@ -45,19 +38,22 @@ public class TestController {
         return new MyBean(String.format("With Path variable my Bean message: %s", name));
     }
 
+    //This method displays messages in different languages as mentioned.
+    //On postman if the Accept-Language is default- its english, dn = denmark and fr = french
+    //messages_fr.properties, messages_dn.properties & messages.properties files with messages are created under resources from which messages arec picked up
+    //as mentioned by the user. We can test it through postman
+    @GetMapping("/internationalized")
+    public String helloInternationalized() {
+        return messageSource.getMessage("good.morning.message", null, LocaleContextHolder.getLocale());
+    }
+
     //Following two Beans are for I18N (Internationalization)
+    //For this under application.properties set [spring.messages.basename=messages]
     @Bean
     public LocaleResolver localeResolver() {
-        SessionLocaleResolver localeResolver = new SessionLocaleResolver();
+        AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
         localeResolver.setDefaultLocale(Locale.US);
         return localeResolver;
     }
 
-    @Bean
-    public ResourceBundleMessageSource bundleMessageSource() {
-        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasename("messages");
-        return messageSource;
-
-    }
 }
