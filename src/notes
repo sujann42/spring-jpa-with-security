@@ -52,28 +52,257 @@ User -> Posts  [1 to many]
  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  SWAGGER:
  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- -Add following 2 dependencies
+ 1) Create a SwaggerConfig Class int the folder where Main Springboot App is located
+//Class
+ @Configuration
+ @EnableSwagger2WebMvc
+ public class SwaggerConfig {
+     @Bean
+     public Docket api(){
+         return new Docket(DocumentationType.SWAGGER_2);
+
+     }
+ }
+
+ -Add following dependency on pom.xml and go to
+ -> "http://localhost:8089/swagger-ui" => shows all end points
+ -> "http://localhost:8089/v2/api-docs" => shows detail of all the components of the rest controller
+ Components of api-docs
+ 1) info: what kind of API, version, description, title, contact, termsOfService and so on.
+ 2) basepath: main path "/"
+ 3) path: all resources we are exposing and different functions [under users we have "/getUsers" and /"postUsers" ]
+ 4) Definitions: What different kind of objects are used? Elements inside Bean.
+
 <!--Swagger Dependencies-->
-<!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger2 -->
-    <dependency>
-        <groupId>io.springfox</groupId>
-        <artifactId>springfox-swagger2</artifactId>
-        <version>2.10.5</version>
-    </dependency>
-<!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui -->
-    <dependency>
-        <groupId>io.springfox</groupId>
-        <artifactId>springfox-swagger-ui</artifactId>
-        <version>2.10.5</version>
-    </dependency>
+<!-- Spring Fox -->
+<dependency>
+    <groupId>io.springfox</groupId>
+    <artifactId>springfox-boot-starter</artifactId>
+    <version>3.0.0</version>
+</dependency>
+
+-> On the SwaggerConfig Class implement the following:
+//Configuration & Enabling of Swagger
+@Configuration
+@EnableSwagger2WebMvc
+public class SwaggerConfig {
+    public static final Contact DEFAULT_CONTACT = new Contact(
+            "Hari Lal", "www.google.com", "aa@gmail.com");
+    public static final ApiInfo DEFAULT_API_INFO = new ApiInfo(
+            "Awesome API Documentation", "My API Documentation",
+            "1.0.0.1", "urn:tos", "Hari",
+            "Apache 2.0", "http://www.apache.org/licenses/LICENSE-2.0");
+    //Default Produces and Consumes
+    private static final Set<String> DEFAULT_PRODUCER_AND_CONSUMES =
+            new HashSet<String>(Arrays.asList("application/json", "application.xml"));
+
+    @Bean
+    public Docket api() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .apiInfo(DEFAULT_API_INFO)
+                .produces(DEFAULT_PRODUCER_AND_CONSUMES)
+                .consumes(DEFAULT_PRODUCER_AND_CONSUMES);
+
+    }
+}
+
+-> To Insert more details on the swagger "["http://localhost:8089/v2/api-docs"]"
+1) Go to User class and do the following:
+i) Annotate @ApiModel(description="All details about the user")
+ii) Annotate @ApiModelProperty("Birth date can't be in the future")
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+MONITORING APIS WITH SPRING BOOT ACTUATOR:
+-------------------------------------------
+- Actuator- monitors the application if its down.
+- Add following dependencies
+1) Actuator [springboot-starter-actuator]: provides monitoring activities [actuator is in HAL format].
+2) Data-rest-hal-browser [hypertext application language] ->Looks at the APIs,
+    identifies the links and shows them on the screen.
+
+-> Go to localhost:8089/actuator and all the urls will be listed:
+1) version 1 url was: "localhost:8089/actuator/"
+2) Earlier version of 2.0.0: "localhost:8089/application/"
+3) Now Lstest versions: "localhost:8089/actuator/"
+-------------------------------------------------------------------
+// 20200808222748
+// http://localhost:8089/actuator/
+
+{
+  "_links": {
+    "self": {
+      "href": "http://localhost:8089/actuator",
+      "templated": false
+    },
+    "health-path": {
+      "href": "http://localhost:8089/actuator/health/{*path}",
+      "templated": true
+    },
+    "health": {
+      "href": "http://localhost:8089/actuator/health",
+      "templated": false
+    },
+    "info": {
+      "href": "http://localhost:8089/actuator/info",
+      "templated": false
+    }
+  }
+}
+
+1) Click on the health: will show the status: UP or something else.
+2) To enable stuff that actuator provides.
+ - go to application.properties and type : management.endpoints.web.exposure.include=*
+ - Rerun the application:
+ - Refresh the page: localhost:8089/actuator/ -> this will list more urls that actuator provides.
+ - Go to localhost:/8089 -> type /actuator: will list all functions "ACTUATOR" provides.
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+IMPLEMENTING STATIC FILTERING FOR RESTFUL SERVICE:
+--------------------------------------------------
+-> Static Filtering is done on the Bean class.
+-> If I call the /getAllUsers I get all the User and their details.
+    {
+        "field1": "value1",
+        "field2": "value2",
+        "field3": "value3"
+    }
+-> If I want to just get
+    name instead of all the details for an user, I can use filter. May be you want to filter
+    password from the list of details of a User.
+ 1) Here: Created a class called FilterController.java and a a bean class and fields:
+    Generate getters and setters and constructor.
+ 2) If you want to ignore the field and not present in the response: Annotate with @JSONIgnore.
+    @JsonIgnore
+    private String field3;
+=> Instead of putting @JSONIgnore on all field one by one: we can do
+   //@JsonIgnoreProperties(value = {"field1, filed2"})
+
+ 3) Rerun: field3 will be ignored
+
+ {
+     "field1": "value1",
+     "field2": "value2"
+ }
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+IMPLEMENTING DYNAMIC FILTERING FOR RESTFUL SERVICE:
+--------------------------------------------------
+-> Filtering fields dynamically.
+-> Dynamic filtering is done on the controller.
+
+//We want to show: field1, filed2:  And hide: filter3:
+//Here SomeBean is a bean class with its own fileds whose properties we want to hide.
+
+    @GetMapping("/filtering")
+    public MappingJacksonValue retrieveSomeBean() {
+        SomeBean someBean = new SomeBean("value1", "value2", "value3");
+        SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept("field1", "field2");
+        FilterProvider filters = new SimpleFilterProvider().addFilter("SomeBeanFilter",filter);
+        MappingJacksonValue mapping = new MappingJacksonValue(someBean);
+        mapping.setFilters(filters);
+
+        return mapping;
+    }
+=> Then on Bean class we have to annotate @JsonIngnore("SomeBeanFilter")
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+VESRSIONING: versioning package com.rest.versioning:
+-----------------------------------------------------------
+MediaType - Github ===> //Misuse of HTTP headers ==> No Caching here
+    => Can't execute on normal browser =>Needs plugin => Technical knowledge is required
+Header - Microsoft ===> //Misuse of HTTP headers ==> No Caching here
+    => Can't execute on normal browser =>Needs plugin => Technical knowledge is required
+URI - Twitter      ===> //polluting URI space    ==> Lot of Caching here => Can
+Req Param- Amazon  ===> //polluting URI space    ==> Lot of Caching here => Can
+-----------------------------------------------------------
+----------------------------------------------------
+1) Approach 1: Creating 2 different uri for 2 different responses.
+-------------------------------------------------=----------------
+-> Old system had a name as only one string
+-> New system wants first name and last name.
+-> How do you solve the problm? ====>Through versioning.
+
+1) Approach 1: URi Versioning
+-------------------------------------------------=----------------
+public class PersonV1 { //OLD
+    private String name;
+}
+public class PersonV2 { //New
+    private Name name;
+}
+public class Name {
+    private String firstName;
+    private String lastName;
+}
+
+....Getters and Setters and constructors (args and no-args) for all 3 classes......
+
+//Controller Class
+@RestController
+public class PersonVersioningController {
+
+    @GetMapping("/v1/person")
+    public PersonV1 personV1() {
+        return new PersonV1("Eden Hazard");
+    }
+
+    @GetMapping("/v2/person")
+    public PersonV2 personV2() {
+        return new PersonV2(new Name("Didier", "Drogba"));
+    }
+}
+
+==> Just 2 controllers for getting 2 different responses.
+---------------------------------------------------
+2) RequestParam Versioning:
+-----------------------------
+@GetMapping(value="/person/param", params = "version=1")
+    public PersonV1 paramV1() {
+        return new PersonV1("Eden Hazard");
+    }
+
+
+    @GetMapping(value="/person/param", params = "version=2")
+    public PersonV2 paramV2() {
+        return new PersonV2(new Name("Didier", "Drogba"));
+    }
+
+    ==>Then get the response using:
+    1) http://localhost:8089/person/param?version=1
+    2) http://localhost:8089/person/param?version=2
+---------------------------------------------------
+3) Accept Header Versioning:
+-------------------------------------------------
+  @GetMapping(value = "/person/header", headers = "X-API-VERSION=1")
+    public PersonV1 headerV1() {
+        return new PersonV1("Eden Hazard");
+    }
+
+
+    @GetMapping(value = "/person/header", headers = "X-API-VERSION=2")
+    public PersonV2 headerV2() {
+        return new PersonV2(new Name("Didier", "Drogba"));
+    }
+
+==>Then get the response using:
+    1) http://localhost:8089/person/header ==> On header pass:  X-API-VERSION => 1
+    2) http://localhost:8089/person/header ==> On header pass:  X-API-VERSION => 2
+---------------------------------------------------
+3) Using Produces Versioning:
+-------------------------------------------------
+@GetMapping(value = "/person/produces", produces = "application/vnd.company.app-v1+json")
+    public PersonV1 producesV1() {
+        return new PersonV1("Eden Hazard");
+    }
+
+
+    @GetMapping(value = "/person/produces", produces = "application/vnd.company.app-v2+json")
+    public PersonV2 producesV2() {
+        return new PersonV2(new Name("Didier", "Drogba"));
+    }
+==>Then get the response using:
+    1) http://localhost:8089/person/produces ==> On header pass:  Accept => application/vnd.company.app-v1+json
+    2) http://localhost:8089/person/produces ==> On header pass:  Accept => application/vnd.company.app-v2+json
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
