@@ -7,15 +7,48 @@ For Other features check on: restful-web-services-with-springboot. [Github]
 BASIC AUTHENTICATION WITH SPRING SECURITY:
 --------------------------------------------
 1) Add Maven Dependency
-
+- Springboot auto configuration kicks off. Automatically configure basic security.
+- Build and run the app.
+- You will be provided with a security password, use that in postman while sending a
+    post-request.
+- Go to Authentication on Postman -> Set username: user and Password: you get from IntelliJ
+- If you don't like the password changing every time: you can set it on application.properties.
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+JPA Repository:
 --------------------------------------------
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Create a repository interface and make it extend JPARepository<User, Integer>
+Create UserJPAResourceController as a controller
+Create a private instance of UserRepository and Autowire it.
+    @Autowired
+    private UserRepository userRepository;
+1) Get all => userRepository.findAll();
+2) Find one => userRepository.findById(id);
+3) Update =>
+4) Delete => userRepository.deleteById(id);
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+POST ENTITY:
++++++++++++++++++++++++++++++++++++++++++++++++++++
+Post.java:
+------------
+ @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
+
+    ----------
+ User.java
+ ---------------
+//One User can have many posts
+    @OneToMany(mappedBy = "user")
+    private List<Post> posts;
+
+http://localhost:8089/jpa/users/10012/posts
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+POSTING a Post for a USER:
 --------------------------------------------
+
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
