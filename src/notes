@@ -46,11 +46,24 @@ Post.java:
 http://localhost:8089/jpa/users/10012/posts
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-POSTING a Post for a USER:
+RICHARDSON MATURITY MODEL:
 --------------------------------------------
-
+1) LEVEL 0: EXPOSE SOAP WEB SERVICES
+2) LEVEL 1: EXPOSE RESOURCES WITH PROPER URI
+3) LEVEL 2: EXPOSE RESOURCES WITH PROPER URI + PROPER USE OF HTTP METHODS.
+4) LEVEL 3: LEVEL 2 + HATEOAS DATA + NEXT POSSIBLE ACTIONS
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+RESTFUL WEB SERVICES: BEST PRACTICES:
+---------------------------------------------------------------------------
+1) CONSUMER FIRST: ALways think about the consumer. Will they understand it?
+2) Have great documentation.
+3) Make sure consumer understand.
+4) Make best use of HTTP methods
+5) Make sure you send proper response [created is not enough only with success, use Created, 201]
+6) No Secure Info in URI.
+7) User plurals
+8) Use nouns for resources: For exceptions: Define a consistent approach.
 --------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
